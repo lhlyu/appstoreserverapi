@@ -11,7 +11,7 @@ import (
 // doc: https://developer.apple.com/documentation/appstoreserverapi/get_refund_history
 // desc: true then signedTransactions order by webOrderLineItemId desc
 func (c *client) ApiGetRefundHistory(transactionId string, desc bool) (*RefundLookupResponse, error) {
-	reqUrl := c.api_get_refund_history_url + transactionId
+	reqUrl := c.apiGetRefundHistoryUrl + transactionId
 	r, err := c.doRequest(http.MethodGet, reqUrl, nil)
 	if err != nil {
 		return nil, err

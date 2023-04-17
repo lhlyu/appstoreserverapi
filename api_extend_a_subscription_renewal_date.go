@@ -10,7 +10,7 @@ import (
 // Extend a Subscription Renewal Date
 // doc: https://developer.apple.com/documentation/appstoreserverapi/extend_a_subscription_renewal_date
 func (c *client) ApiExtendAsubscriptionRenewalDate(transactionId string, req ExtendRenewalDateRequest) (*ExtendRenewalDateResponse, error) {
-	reqUrl := c.api_extend_a_subscription_renewal_date_url + transactionId
+	reqUrl := c.apiExtendASubscriptionRenewalDateUrl + transactionId
 	b, _ := json.Marshal(req)
 	r, err := c.doRequest(http.MethodPut, reqUrl, bytes.NewReader(b))
 	if err != nil {

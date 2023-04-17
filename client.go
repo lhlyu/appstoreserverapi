@@ -3,11 +3,10 @@ package appstoreserverapi
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/tidwall/gjson"
 	"io"
-	"io/ioutil"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -93,12 +92,12 @@ type Client interface {
 }
 
 type apiUrl struct {
-	api_get_all_subscription_statuses_url      string
-	api_get_transaction_history_url            string
-	api_lookup_order_id_url                    string
-	api_get_refund_history_url                 string
-	api_extend_a_subscription_renewal_date_url string
-	api_send_consumption_information_url       string
+	apiGetAllSubscriptionStatusesUrl     string
+	apiGetTransactionHistoryUrl          string
+	apiLookupOrderIdUrl                  string
+	apiGetRefundHistoryUrl               string
+	apiExtendASubscriptionRenewalDateUrl string
+	apiSendConsumptionInformationUrl     string
 }
 
 type client struct {
@@ -142,22 +141,22 @@ func NewClient(cfg *Config) (Client, error) {
 		cfg:  cfg,
 		lock: sync.Mutex{},
 		apiUrl: apiUrl{
-			api_get_all_subscription_statuses_url:      production_base_url + api_get_all_subscription_statuses_uri,
-			api_get_transaction_history_url:            production_base_url + api_get_transaction_history_uri,
-			api_lookup_order_id_url:                    production_base_url + api_lookup_order_id_uri,
-			api_get_refund_history_url:                 production_base_url + api_get_refund_history_uri,
-			api_extend_a_subscription_renewal_date_url: production_base_url + api_extend_a_subscription_renewal_date_uri,
-			api_send_consumption_information_url:       production_base_url + api_send_consumption_information_uri,
+			apiGetAllSubscriptionStatusesUrl:     productionBaseUrl + apiGetAllSubscriptionStatusesUri,
+			apiGetTransactionHistoryUrl:          productionBaseUrl + apiGetTransactionHistoryUri,
+			apiLookupOrderIdUrl:                  productionBaseUrl + apiLookupOrderIdUri,
+			apiGetRefundHistoryUrl:               productionBaseUrl + apiGetRefundHistoryUri,
+			apiExtendASubscriptionRenewalDateUrl: productionBaseUrl + apiExtendASubscriptionRenewalDateUri,
+			apiSendConsumptionInformationUrl:     productionBaseUrl + apiSendConsumptionInformationUri,
 		},
 	}
 	if cfg.Evn == Development {
 		c.apiUrl = apiUrl{
-			api_get_all_subscription_statuses_url:      development_base_url + api_get_all_subscription_statuses_uri,
-			api_get_transaction_history_url:            development_base_url + api_get_transaction_history_uri,
-			api_lookup_order_id_url:                    development_base_url + api_lookup_order_id_uri,
-			api_get_refund_history_url:                 development_base_url + api_get_refund_history_uri,
-			api_extend_a_subscription_renewal_date_url: development_base_url + api_extend_a_subscription_renewal_date_uri,
-			api_send_consumption_information_url:       development_base_url + api_send_consumption_information_uri,
+			apiGetAllSubscriptionStatusesUrl:     developmentBaseUrl + apiGetAllSubscriptionStatusesUri,
+			apiGetTransactionHistoryUrl:          developmentBaseUrl + apiGetTransactionHistoryUri,
+			apiLookupOrderIdUrl:                  developmentBaseUrl + apiLookupOrderIdUri,
+			apiGetRefundHistoryUrl:               developmentBaseUrl + apiGetRefundHistoryUri,
+			apiExtendASubscriptionRenewalDateUrl: developmentBaseUrl + apiExtendASubscriptionRenewalDateUri,
+			apiSendConsumptionInformationUrl:     developmentBaseUrl + apiSendConsumptionInformationUri,
 		}
 	}
 	return c, nil
@@ -210,7 +209,7 @@ func (c *client) doRequest(method, url string, body io.Reader) (*gjson.Result, e
 		if err != nil {
 			continue
 		}
-		b, _ := ioutil.ReadAll(resp.Body)
+		b, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		if resp.StatusCode != http.StatusOK {
 			appErr, ok := newAppErrorFromJson(b)
@@ -236,14 +235,16 @@ func (c *client) doRequest(method, url string, body io.Reader) (*gjson.Result, e
 func Parse(payload string, v interface{}) error {
 	token, err := jwt.ParseString(payload, jwt.WithVerify(false), jwt.WithValidate(false))
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 	b, err := json.Marshal(token.PrivateClaims())
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 	if v == nil {
-		fmt.Println(string(b))
+		log.Println(string(b))
 		return nil
 	}
 	return json.Unmarshal(b, v)

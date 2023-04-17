@@ -8,7 +8,7 @@ import (
 // Look Up Order ID
 // doc: https://developer.apple.com/documentation/appstoreserverapi/look_up_order_id
 func (c *client) ApiLookUpOrderId(orderId string) (*OrderLookupResponse, error) {
-	reqUrl := c.api_lookup_order_id_url + orderId
+	reqUrl := c.apiLookupOrderIdUrl + orderId
 	r, err := c.doRequest(http.MethodGet, reqUrl, nil)
 	if err != nil {
 		return nil, err

@@ -10,7 +10,7 @@ import (
 // Send Consumption Information
 // doc: https://developer.apple.com/documentation/appstoreserverapi/send_consumption_information
 func (c *client) ApiSendConsumptionInformation(transactionId string, req ConsumptionRequest) error {
-	reqUrl := c.api_send_consumption_information_url + transactionId
+	reqUrl := c.apiSendConsumptionInformationUrl + transactionId
 	b, _ := json.Marshal(req)
 	_, err := c.doRequest(http.MethodPut, reqUrl, bytes.NewReader(b))
 	if err != nil {

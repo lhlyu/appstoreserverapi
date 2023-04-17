@@ -8,7 +8,7 @@ import (
 // Get All Subscription Statuses
 // doc: https://developer.apple.com/documentation/appstoreserverapi/get_all_subscription_statuses
 func (c *client) ApiGetAllSubscriptionStatuses(transactionId string) (*StatusResponse, error) {
-	reqUrl := c.api_get_all_subscription_statuses_url + transactionId
+	reqUrl := c.apiGetAllSubscriptionStatusesUrl + transactionId
 	r, err := c.doRequest(http.MethodGet, reqUrl, nil)
 	if err != nil {
 		return nil, err

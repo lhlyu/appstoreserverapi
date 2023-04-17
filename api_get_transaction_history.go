@@ -11,7 +11,7 @@ import (
 // doc: https://developer.apple.com/documentation/appstoreserverapi/get_transaction_history
 // desc: true then signedTransactions order by webOrderLineItemId desc
 func (c *client) ApiGetTransactionHistory(transactionId string, desc bool) (*HistoryResponse, error) {
-	reqUrl := c.api_get_transaction_history_url + transactionId
+	reqUrl := c.apiGetTransactionHistoryUrl + transactionId
 	r, err := c.doRequest(http.MethodGet, reqUrl, nil)
 	if err != nil {
 		return nil, err
